@@ -40,6 +40,7 @@ done
 declare -a cask_apps=(
     'aerial'    # tvOS screensavers
     'google-chrome'
+    'google-drive-file-stream'
     'docker'
     'slack'
     'steam' # skip on work computers
@@ -66,5 +67,19 @@ done
 git clone https://github.com/rh46/.dotfiles.git $HOME/.dotfiles
 sh $HOME/.dotfiles/setup.sh
 
-## set custom terminal
+## set custom terminal.app
 sh terminal/set-terminal
+
+## create SSH key and configure auth
+#TODO: create command agrument and variable for email
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com on ${HOSTNAME%.*}"
+eval "$(ssh-agent -s)"  # start ssh agent
+touch ~/.ssh/config # create ssh config file
+cat <<EOT >> ~/.ssh/config
+Host * 
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/id_rsa
+EOT
+ssh-add -K ~/.ssh/id_rsa    # add new key agent
+echo "REMINDER: upload new ssh key to github profile. https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/"
