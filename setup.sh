@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-#TODO: add arguments for home and work
+#TODO: add command arguments
+#TODO: separate functions for softeware, dotfiles, hardening
+#TODO: software install options for home or work
+#TODO: variable for email
 
 ## install homebrew
 if [[ ! -f $(which brew) ]] # check is brew is installed first
@@ -36,13 +39,12 @@ for f in "${formulas[@]}"; do
 done
 
 ## install casks
-#TODO: separate list for home and work
 declare -a cask_apps=(
     'aerial'    # tvOS screensavers
     'google-chrome'
-    'google-drive-file-stream'
+    'google-drive-file-stream'  # skip on home computers
     'docker'
-    'slack'
+    'slack' # skip on home computers
     'steam' # skip on work computers
     'powershell'
     'torbrowser'    # skip on work computers
@@ -71,7 +73,6 @@ sh $HOME/.dotfiles/setup.sh
 sh terminal/set-terminal
 
 ## create SSH key and configure auth
-#TODO: create command agrument and variable for email
 ssh-keygen -t rsa -b 4096 -C "your_email@example.com on ${HOSTNAME%.*}"
 eval "$(ssh-agent -s)"  # start ssh agent
 touch ~/.ssh/config # create ssh config file
