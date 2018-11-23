@@ -1,9 +1,56 @@
 #!/usr/bin/env bash
 
-#TODO: add command arguments
 #TODO: separate functions for softeware, dotfiles, hardening
-#TODO: software install options for home or work
-#TODO: variable for email
+#TODO: allow options to skip home or work
+
+display_help() { 
+	echo "New macOS setup script" 
+	echo "Usage: $0 [-h] -e <email> [-s {work|home}]"
+    echo ""
+    echo "Options:"
+    echo "  -h, --help      Show this help message and exit."
+    echo "  -e, --email EMAIL     Email address to associate with SSH keys."
+    echo "  -s, --skip-profile {work|home}  Skip installation of certain software"
+	}
+
+## must have 
+if [ $# -eq 0 ]; then
+    echo "No arguments provided"
+    exit 1
+fi
+
+## check user supplied parameters
+PARAMS=""
+while (( "$#" )); do
+    case "$1" in
+        -h | --help)
+            display_help
+            exit 0
+            ;;
+        -e | --email)
+            EMAIL=$2
+            shift 2
+            ;;
+        -s | --skip-profile)
+            if [$2="home"];then
+                SKIP=$2
+                shift 2
+            fi
+            ;;
+        --) # end argument parsing
+            shift
+            break
+            ;;
+        -*|--*=) # unsupported flags
+            echo "Error: Unsupported flag $1" >&2
+            exit 1
+            ;;
+        *) # preserve positional arguments
+            PARAMS="$PARAMS $1"
+            shift
+            ;;
+    esac
+done
 
 ## install homebrew
 if [[ ! -f $(which brew) ]] # check is brew is installed first
@@ -30,6 +77,7 @@ declare -a formulas=(
     'bash-completion'
     'cloc'
     'go'
+    'kubernetes-cli'
     'mas'
     'terraform'
 )
@@ -42,15 +90,16 @@ done
 declare -a cask_apps=(
     'aerial'    # tvOS screensavers
     'google-chrome'
-    'google-drive-file-stream'  # skip on home computers
-    'docker'
-    'slack' # skip on home computers
-    'steam' # skip on work computers
-    'powershell'
-    'torbrowser'    # skip on work computers
-    'virtualbox'
     'visual-studio-code'
-    'wireshark'
+    'docker'
+    'minikube'
+    'powershell'
+    'virtualbox'
+    'wireshark' #work
+    'slack' # work
+    'google-drive-file-stream'  # work
+    'torbrowser'    # home
+    'steam' # home
 )
 
 for app in "${cask_apps[@]}"; do
@@ -73,7 +122,7 @@ sh $HOME/.dotfiles/setup.sh
 sh terminal/set-terminal
 
 ## create SSH key and configure auth
-ssh-keygen -t rsa -b 4096 -C "your_email@example.com on ${HOSTNAME%.*}"
+ssh-keygen -t rsa -b 4096 -C "${EMAIL} on ${HOSTNAME%.*}"
 eval "$(ssh-agent -s)"  # start ssh agent
 touch ~/.ssh/config # create ssh config file
 cat <<EOT >> ~/.ssh/config
@@ -84,3 +133,15 @@ Host *
 EOT
 ssh-add -K ~/.ssh/id_rsa    # add new key agent
 echo "REMINDER: upload new ssh key to github profile. https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/"
+
+## install vscode extentions
+declare -a vscode_exts=(
+    'ms-python.python'
+    'ms-vscode.Go'
+    'ms-vscode.PowerShell'
+    'PeterJausovec.vscode-docker'
+)
+
+for ext in "${vscode_exts[@]}"; do
+    code --install-extension "$ext"
+done

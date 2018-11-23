@@ -2,12 +2,20 @@
 A script to prevent you from reliving the same macOS setup routine over and over again.
 
 ### Installation
-No initial software or configuration needed. Just run the commands below. Make sure to replace `your_real_email_here` with your email address in the third command.
+No initial software or configuration needed. Just run the commands below. Make sure to replace `email@exampe.com` with your email address in the third command.
 ```sh
 $ mkdir $HOME/groundhog-day && cd $HOME/groundhog-day
 $ curl -L "https://github.com/rh46/groundhog-day/tarball/master" | tar -xz --strip-components=1
-$ sed -i 's/fake_email@example.com/your_real_email_here/g' setup.sh
-$ sh setup.sh
+$ sh setup.sh -e <email@exampe.com>
+```
+
+### Usage
+```setup.sh [-h] -e <email> [-s {work|home}]
+    
+    Options:
+      -h, --help      Show this help message and exit.
+      -e, --email EMAIL     Email address to associate with SSH keys.
+      -s, --skip-profile {work|home}  Skip installation of certain software
 ```
 
 ### Caution
