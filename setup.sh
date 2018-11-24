@@ -2,7 +2,7 @@
 
 display_help() { 
 	echo "New macOS setup script" 
-	echo "Usage: $0 [-h] -e <email> [-s {work|home}]"
+	echo "Usage: $0 -e <email> [-s {work|home}] [-u <github user>]"
     echo ""
     echo "Options:"
     echo "  -h, --help  Show this help message and exit."
@@ -12,14 +12,8 @@ display_help() {
 }
 
 ## Variables
-EMAIL=""
-USER=""
-
-## must have email address
-if [ $# -eq 0 ]; then
-    echo "No arguments provided"
-    exit 1
-fi
+EMAIL=$USER
+GUSER=""
 
 ## check user supplied parameters
 PARAMS=""
@@ -34,7 +28,7 @@ while (( "$#" )); do
             shift 2
             ;;
         -u | --github-user)
-            USER=$2
+            GUSER=$2
             shift 2
             ;;
         -s | --skip-profile)
@@ -162,7 +156,7 @@ done
 
 ## get dotfiles
 git clone https://github.com/rh46/.dotfiles.git $HOME/.dotfiles
-sh $HOME/.dotfiles/setup.sh -u $USER
+sh $HOME/.dotfiles/setup.sh -u $GUSER
 
 ## set custom terminal.app
 sh terminal/set-terminal
