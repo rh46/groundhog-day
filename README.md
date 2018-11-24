@@ -24,3 +24,9 @@ This script is intended for my personal use so be careful about using it without
 
 ### Acknowledgement
 Most of this script was taken from this [hackernoon article](https://hackernoon.com/personal-macos-workspace-setup-adf61869cd79) by [Nenad Novaković](https://github.com/dvlden). :bow:
+
+### TODO
+- [x] Command line arguments
+- [x] Ability to skip home or work installions
+- [ ] Hardening functionality
+- [ ] Separate functions for softeware, dotfiles, and hardening

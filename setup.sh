@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-#TODO: separate functions for softeware, dotfiles, hardening
-#TODO: allow options to skip home or work
-
 display_help() { 
 	echo "New macOS setup script" 
 	echo "Usage: $0 [-h] -e <email> [-s {work|home}]"
@@ -96,9 +93,10 @@ declare -a casks_core=(
     'powershell'
     'virtualbox'
 )
+
 declare -a casks_home=(
-    'torbrowser'    # home
-    'steam' # home
+    'torbrowser'
+    'steam'
 )
 
 declare -a casks_work=(
