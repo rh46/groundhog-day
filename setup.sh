@@ -2,13 +2,13 @@
 
 display_help() { 
 	echo "New macOS setup script" 
-	echo "Usage: $0 -e <email> [-s {work|home}] [-u <github user>]"
+	echo "Usage: $0 [-e <email>] [-s {work|home}] [-u <github user>]"
     echo ""
     echo "Options:"
     echo "  -h, --help  Show this help message and exit."
     echo "  -e, --email <email> Email address to associate with SSH keys."
-    echo "  -u, --github-user <user>    Github username for dotfile."
     echo "  -s, --skip-profile {work|home}  Skip installation of certain software."
+    echo "  -u, --github-user <user>    Github username for dotfile."
 }
 
 ## Variables
@@ -97,7 +97,7 @@ declare -a casks_core=(
 )
 
 declare -a casks_home=(
-    'torbrowser'
+    'tor-browser'
     'steam'
 )
 

@@ -2,21 +2,22 @@
 A script to prevent you from reliving the same macOS setup routine over and over again.
 
 ### Installation
-No initial software or configuration needed. Just run the commands below. Make sure to replace `email@exampe.com` with your email address in the third command.
+No initial software or configuration needed. Just run the commands below.
 ```sh
 $ mkdir $HOME/groundhog-day && cd $HOME/groundhog-day
 $ curl -L "https://github.com/rh46/groundhog-day/tarball/master" | tar -xz --strip-components=1
-$ sh setup.sh -e email@exampe.com
+$ sh setup.sh -e you@example.com
 ```
 
 ### Usage
-```sh
-setup.sh [-h] -e <email> [-s {work|home}]
+```
+setup.sh [-e <email>] [-s {work|home}] [-u <github user>]
     
 Options:
   -h, --help    Show this help message and exit.
   -e, --email <email>   Email address to associate with SSH keys.
   -s, --skip-profile {work|home}    Skip installation of certain software.
+  -u, --github-user <user>    Github username for dotfile.
 ```
 
 ### Caution
