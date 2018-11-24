@@ -7,8 +7,13 @@ display_help() {
     echo "Options:"
     echo "  -h, --help  Show this help message and exit."
     echo "  -e, --email <email> Email address to associate with SSH keys."
+    echo "  -u, --github-user <user>    Github username for dotfile."
     echo "  -s, --skip-profile {work|home}  Skip installation of certain software."
-	}
+}
+
+## Variables
+EMAIL=""
+USER=""
 
 ## must have email address
 if [ $# -eq 0 ]; then
@@ -20,7 +25,7 @@ fi
 PARAMS=""
 while (( "$#" )); do
     case "$1" in
-        -h | --help)
+        -h | --help | ?)
             display_help
             exit 0
             ;;
@@ -28,11 +33,13 @@ while (( "$#" )); do
             EMAIL=$2
             shift 2
             ;;
+        -u | --github-user)
+            USER=$2
+            shift 2
+            ;;
         -s | --skip-profile)
-            if [$2="home"];then
-                SKIP=$2
-                shift 2
-            fi
+            SKIP=$2
+            shift 2
             ;;
         --) # end argument parsing
             shift
@@ -76,6 +83,7 @@ declare -a formulas=(
     'go'
     'kubernetes-cli'
     'mas'
+    'python3'
     'terraform'
 )
 
@@ -106,6 +114,9 @@ declare -a casks_work=(
 )
 
 case $SKIP in
+    "")
+        declare -a cask_apps=( ${casks_core[@]} ${casks_work[@]} ${casks_home[@]})
+        ;;
     home)
         declare -a cask_apps=( ${casks_core[@]} ${casks_work[@]} )
         ;;
@@ -127,9 +138,31 @@ for app in "${mas_apps[@]}"; do
     mas install "$app"
 done
 
+## install python3 packages
+declare -a pip3s=(
+    'boto3'
+    'PyGithub'
+    'PyPDF2'
+    'virtualenvwrapper'
+)
+
+for p in "${pip3s[@]}"; do
+    pip3 install "$p"
+done
+
+## install gems
+declare -a gems=(
+    'aws-sdk'
+    'aws_public_ips'
+)
+
+for g in "${gem[@]}"; do
+    gem install "$g"
+done
+
 ## get dotfiles
 git clone https://github.com/rh46/.dotfiles.git $HOME/.dotfiles
-sh $HOME/.dotfiles/setup.sh
+sh $HOME/.dotfiles/setup.sh -u $USER
 
 ## set custom terminal.app
 sh terminal/set-terminal
@@ -155,6 +188,6 @@ declare -a vscode_exts=(
     'PeterJausovec.vscode-docker'
 )
 
-for ext in "${vscode_exts[@]}"; do
-    code --install-extension "$ext"
+for e in "${vscode_exts[@]}"; do
+    code --install-extension "$e"
 done
