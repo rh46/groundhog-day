@@ -6,16 +6,17 @@ No initial software or configuration needed. Just run the commands below. Make s
 ```sh
 $ mkdir $HOME/groundhog-day && cd $HOME/groundhog-day
 $ curl -L "https://github.com/rh46/groundhog-day/tarball/master" | tar -xz --strip-components=1
-$ sh setup.sh -e <email@exampe.com>
+$ sh setup.sh -e email@exampe.com
 ```
 
 ### Usage
-```setup.sh [-h] -e <email> [-s {work|home}]
+```bash
+setup.sh [-h] -e <email> [-s {work|home}]
     
-    Options:
-      -h, --help      Show this help message and exit.
-      -e, --email EMAIL     Email address to associate with SSH keys.
-      -s, --skip-profile {work|home}  Skip installation of certain software
+Options:
+  -h, --help    Show this help message and exit.
+  -e, --email <email>   Email address to associate with SSH keys.
+  -s, --skip-profile {work|home}    Skip installation of certain software.
 ```
 
 ### Caution

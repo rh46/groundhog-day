@@ -8,12 +8,12 @@ display_help() {
 	echo "Usage: $0 [-h] -e <email> [-s {work|home}]"
     echo ""
     echo "Options:"
-    echo "  -h, --help      Show this help message and exit."
-    echo "  -e, --email EMAIL     Email address to associate with SSH keys."
-    echo "  -s, --skip-profile {work|home}  Skip installation of certain software"
+    echo "  -h, --help  Show this help message and exit."
+    echo "  -e, --email <email> Email address to associate with SSH keys."
+    echo "  -s, --skip-profile {work|home}  Skip installation of certain software."
 	}
 
-## must have 
+## must have email address
 if [ $# -eq 0 ]; then
     echo "No arguments provided"
     exit 1
@@ -87,7 +87,7 @@ for f in "${formulas[@]}"; do
 done
 
 ## install casks
-declare -a cask_apps=(
+declare -a casks_core=(
     'aerial'    # tvOS screensavers
     'google-chrome'
     'visual-studio-code'
@@ -95,17 +95,32 @@ declare -a cask_apps=(
     'minikube'
     'powershell'
     'virtualbox'
-    'wireshark' #work
-    'slack' # work
-    'google-drive-file-stream'  # work
+)
+declare -a casks_home=(
     'torbrowser'    # home
     'steam' # home
 )
+
+declare -a casks_work=(
+    'wireshark'
+    'slack'
+    'google-drive-file-stream'
+)
+
+case $SKIP in
+    home)
+        declare -a cask_apps=( ${casks_core[@]} ${casks_work[@]} )
+        ;;
+    work)
+        declare -a cask_apps=( ${casks_core[@]} ${casks_home[@]} )
+        ;;
+esac
 
 for app in "${cask_apps[@]}"; do
     brew cask install "$app"
 done
 
+## install mac apple store apps
 declare -a mas_apps=(
     '443987910'  # 1Password
 )
