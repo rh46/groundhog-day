@@ -7,6 +7,7 @@ display_help() {
     echo "Options:"
     echo "  -h, --help  Show this help message and exit."
     echo "  -e, --email <email> Email address to associate with SSH keys."
+    echo "  -p, --set-prefs     Set system preferences."
     echo "  -s, --skip-profile {work|home}  Skip installation of certain software."
     echo "  -u, --github-user <user>    Github username for dotfile."
 }
@@ -25,6 +26,10 @@ while (( "$#" )); do
             ;;
         -e | --email)
             EMAIL=$2
+            shift 2
+            ;;
+        -p | --set-prefs)
+            PREF=true
             shift 2
             ;;
         -u | --github-user)
@@ -51,8 +56,7 @@ while (( "$#" )); do
 done
 
 ## install homebrew
-if [[ ! -f $(which brew) ]] # check is brew is installed first
-then
+if [[ ! -f $(which brew) ]]; then  # check is brew is installed first
     echo "Installing homebrew..."
 
     ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
@@ -160,6 +164,11 @@ sh $HOME/.dotfiles/setup.sh -u $GUSER
 
 ## set custom terminal.app
 sh terminal/set-terminal
+
+## set custom preferernces
+if [[ $PREF = true ]]; then
+    sh set-preferernces
+fi
 
 ## create SSH key and configure auth
 ssh-keygen -t rsa -b 4096 -C "${EMAIL} on ${HOSTNAME%.*}"
