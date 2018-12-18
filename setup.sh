@@ -166,7 +166,7 @@ sh $HOME/.dotfiles/setup.sh -u $GUSER
 sh terminal/set-terminal
 
 ## set custom preferernces
-if $PREF = true; then
+if [[ $PREF = true ]]; then
     sh set-preferernces
 fi
 
