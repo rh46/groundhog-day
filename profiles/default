@@ -1,0 +1,25 @@
+#setup.sh loads each line as an array. objects separate by space
+
+#FORMULAS
+awscli clisso cloc go kubernetes-cli kubectx jq mas pyenv terraform yq
+
+#CASKS
+aerial google-chrome visual-studio-code docker minikube powershell virtualbox
+
+#PIPS
+boto3 PyGithub PyPDF2 virtualenvwrapper
+
+#GEMS
+aws-sdk aws_public_ips
+
+#VSCODE_EXTS
+ms-python.python ms-vscode.Go ms-vscode.PowerShell ms-azuretools.vscode-docker mauve.terraform wayou.vscode-todo-highlight Shan.code-settings-sync
+
+#MAS_APPS
+443987910 441258766 803453959 1147396723
+
+#COMMENTS
+#443987910 = 1Password
+#441258766 = Magnet
+#803453959 = Slack
+#1147396723 = WhatsApp
