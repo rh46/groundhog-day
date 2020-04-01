@@ -44,6 +44,8 @@ if [[ $SUDOER ]]; then
         sudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool false # disable guest account
 fi
 
+##### dns
+networksetup -setdnsservers 1.1.1.1 9.9.9.9
 
 ##### auto updates
 defaults write com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true     # check for updates automatically
