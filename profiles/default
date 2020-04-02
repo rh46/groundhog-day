@@ -1,13 +1,13 @@
 #setup.sh loads each line as an array. objects separate by space
 
 #FORMULAS
-awscli clisso cloc go kubernetes-cli kubectx jq mas pyenv terraform yq
+awscli clisso cloc go kubernetes-cli kubectx jq mas pyenv python3 terraform yq
 
 #CASKS
 aerial google-chrome visual-studio-code docker minikube powershell virtualbox
 
 #PIPS
-boto3 PyGithub PyPDF2 virtualenvwrapper
+boto3 PyGithub
 
 #GEMS
 aws-sdk aws_public_ips
