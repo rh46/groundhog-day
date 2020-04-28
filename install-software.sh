@@ -1,11 +1,18 @@
 #!/usr/bin/env bash
 
+PROFILE=''
+TEST=false
+
 ## check user supplied parameters
 PARAMS=""
 while (( "$#" )); do
     case "$1" in
         --profile)
             PROFILE=$2
+            shift 2
+            ;;
+        --dry-run)
+            TEST=true
             shift 2
             ;;
         --) # end argument parsing
@@ -54,7 +61,7 @@ function get_install_list {
 
 function main {
     ## install homebrew
-    if [[ ! -f $(which brew) ]]; then  # check is brew is installed first
+    if [[ ! -f $(which brew) ]] && [[ $TEST=false ]]; then  # check if brew is installed first
         echo "Installing homebrew..."
 
         ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
@@ -70,48 +77,80 @@ function main {
         echo "Skipping homebrew..."
     fi
 
+
     ## homebrew should install xcode tools but just in case...
-    if [[ -f $(xcode-select -p &> /dev/null) ]]; then
+    if [[ -f $(xcode-select -p &> /dev/null) ]] && [[ $TEST=false ]]; then
         xcode-select --install
     fi
 
+
     ## install homebrew formulas
     for f in $(get_install_list formulas); do
-        #brew install "$f"
-        echo "brew install $f" # for testing
+        if  [[ $TEST=false ]]; then
+            brew install "$f"
+        else
+            echo "brew install $f" # for testing
+        fi
     done
+
 
     ## install homebrew casks
     for c in $(get_install_list casks); do
-        #brew cask install "$c"
-        echo "brew cask install "$c"" # for testing
+        if  [[ $TEST=false ]]; then
+            brew cask install "$c"
+        else
+            echo "brew cask install "$c"" # for testing
+        fi
     done
+
 
     ## install mac apple store apps
     for a in $(get_install_list mas_apps); do
-        #mas install "$a"
-        echo "mas install "$a"" # for testing
+        if  [[ $TEST=false ]]; then
+            mas install "$a"
+        else
+            echo "mas install "$a"" # for testing
+        fi
     done
+
 
     ## configure python and install packages
     latest=$(pyenv install --list | grep " 3\.*" | grep -v dev | tail -n1 | awk '{$1=$1;print}') # set latest to stable version
-    #pyenv install $latest
-    #pyenv global 
+    if  [[ $TEST=false ]]; then
+        pyenv install $latest
+        pyenv global 
+    else
+        # for testing
+        echo "pyenv install $latest" 
+        echo "pyenv global" 
+    fi
+    
     for p in $(get_install_list pips); do
-        #pip install "$p"
-        echo "pip install "$p"" # for testing
+        if  [[ $TEST=false ]]; then
+            pip install "$p"
+        else
+            echo "pip install "$p"" # for testing
+        fi
     done
+
 
     ## install gems
     for g in $(get_install_list gems); do
-        #gem install "$g"
-        echo "gem install "$g"" # for testing
+        if  [[ $TEST=false ]]; then
+            gem install "$g"
+        else
+            echo "gem install "$g"" # for testing
+        fi
     done
+
 
     ## install vscode extentions
     for e in $(get_install_list vscode_exts); do
-        #code --install-extension "$e"
-        echo "code --install-extension "$e"" # for testing
+        if  [[ $TEST=false ]]; then
+            code --install-extension "$e"
+        else
+            echo "code --install-extension "$e"" # for testing
+        fi
     done
 }
 
