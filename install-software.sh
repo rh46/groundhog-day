@@ -38,18 +38,18 @@ function get_install_list {
         *) ;;
     esac
 
-    # put default apps from apps.csv into array
-    local apps=( $(awk -F ',' -v type=$type '{ if ($2 == type && $3 == "default") print $1 }' apps.csv) )
+    # put default software from apps.csv into array
+    local software=( $(awk -F ',' -v type=$type '{ if ($2 == type && $3 == "default") print $1 }' apps.csv) )
 
     case $PROFILE in
-        # get list of apps for selected profile
-        home) apps+=( $(awk -F ',' -v type=$type '{ if ($2 == type && $3 == "home") print $1 }' apps.csv) ) ;;
-        work) apps+=( $(awk -F ',' -v type=$type '{ if ($2 == type && $3 == "work") print $1 }' apps.csv) ) ;;
+        # get list of software for selected profile
+        home) software+=( $(awk -F ',' -v type=$type '{ if ($2 == type && $3 == "home") print $1 }' apps.csv) ) ;;
+        work) software+=( $(awk -F ',' -v type=$type '{ if ($2 == type && $3 == "work") print $1 }' apps.csv) ) ;;
         *) ;;
     esac
 
     # print list
-    echo ${apps[@]}
+    echo ${software[@]}
 }
 
 function main {
