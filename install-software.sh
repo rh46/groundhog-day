@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 PROFILE=''
-TEST=false
+TEST=''
 
 ## check user supplied parameters
 PARAMS=""
@@ -13,7 +13,7 @@ while (( "$#" )); do
             ;;
         --dry-run)
             TEST=true
-            shift 2
+            shift
             ;;
         --) # end argument parsing
             shift
@@ -61,7 +61,7 @@ function get_install_list {
 
 function main {
     ## install homebrew
-    if [[ ! -f $(which brew) ]] && [[ $TEST=false ]]; then  # check if brew is installed first
+    if [[ ! -f $(which brew) ]] && [[ ! $TEST ]]; then  # check if brew is installed first
         echo "Installing homebrew..."
 
         ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
@@ -79,14 +79,14 @@ function main {
 
 
     ## homebrew should install xcode tools but just in case...
-    if [[ -f $(xcode-select -p &> /dev/null) ]] && [[ $TEST=false ]]; then
+    if [[ -f $(xcode-select -p &> /dev/null) ]] && [[ ! $TEST ]]; then
         xcode-select --install
     fi
 
 
     ## install homebrew formulas
     for f in $(get_install_list formulas); do
-        if  [[ $TEST=false ]]; then
+        if  [[ ! $TEST ]]; then
             brew install "$f"
         else
             echo "brew install $f" # for testing
@@ -96,7 +96,7 @@ function main {
 
     ## install homebrew casks
     for c in $(get_install_list casks); do
-        if  [[ $TEST=false ]]; then
+        if  [[ ! $TEST ]]; then
             brew cask install "$c"
         else
             echo "brew cask install "$c"" # for testing
@@ -106,7 +106,7 @@ function main {
 
     ## install mac apple store apps
     for a in $(get_install_list mas_apps); do
-        if  [[ $TEST=false ]]; then
+        if  [[ ! $TEST ]]; then
             mas install "$a"
         else
             echo "mas install "$a"" # for testing
@@ -116,7 +116,7 @@ function main {
 
     ## configure python and install packages
     latest=$(pyenv install --list | grep " 3\.*" | grep -v dev | tail -n1 | awk '{$1=$1;print}') # set latest to stable version
-    if  [[ $TEST=false ]]; then
+    if  [[ ! $TEST ]]; then
         pyenv install $latest
         pyenv global 
     else
@@ -126,7 +126,7 @@ function main {
     fi
     
     for p in $(get_install_list pips); do
-        if  [[ $TEST=false ]]; then
+        if  [[ ! $TEST ]]; then
             pip install "$p"
         else
             echo "pip install "$p"" # for testing
@@ -136,7 +136,7 @@ function main {
 
     ## install gems
     for g in $(get_install_list gems); do
-        if  [[ $TEST=false ]]; then
+        if  [[ ! $TEST ]]; then
             gem install "$g"
         else
             echo "gem install "$g"" # for testing
@@ -146,7 +146,7 @@ function main {
 
     ## install vscode extentions
     for e in $(get_install_list vscode_exts); do
-        if  [[ $TEST=false ]]; then
+        if  [[ ! $TEST ]]; then
             code --install-extension "$e"
         else
             echo "code --install-extension "$e"" # for testing
