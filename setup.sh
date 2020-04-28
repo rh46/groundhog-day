@@ -50,8 +50,12 @@ function main {
 
     bash create-ssh.sh
 
+    if [[ $PREF ]]; then
+        bash set-preferences.sh
+    fi
+
     ## get rh46 dotfiles (private repo) if you're me
-    if [ $email_hash == "8b0a81b8ee543657730b67074c08a332" ]; then
+    if [[ $email_hash == "8b0a81b8ee543657730b67074c08a332" ]]; then
         git clone https://github.com/rh46/dotfiles.git $HOME/rh46/dotfiles
         bash $HOME/rh46/dotfiles/setup.sh
     fi
