@@ -6,19 +6,19 @@ email_hash=$(echo ${email} | md5)
 
 function display_help { 
 	echo "New macOS environment setup script" 
-	echo "Usage: $0 [-c] [-e <email>] [-p {work|home}]"
+	echo "Usage: $0 [--profile {work|home}] [--set-prefs]"
     echo ""
     echo "Options:"
-    echo "  -h, --help  Show this help message and exit."
-    echo "  -c, --config-prefs     Set system preferences."
-    echo "  -p, --profile {work|home}  Installation additional software defined in profiles folder."
+    echo "  --help  Show this help message and exit."
+    echo "  --profile {work|home}   Installation additional software defined in profiles folder."
+    echo "  --set-prefs Set system preferences."
 }
 
 ## check user supplied parameters
 PARAMS=""
 while (( "$#" )); do
     case "$1" in
-        -h | --help | ? | "")
+        --help | ? | "")
             display_help
             exit 0
             ;;
@@ -26,9 +26,9 @@ while (( "$#" )); do
             PROFILE=$2
             shift 2
             ;;
-        --config-prefs)
+        --set-prefs)
             PREF=true
-            shift 2
+            shift
             ;;
         --) # end argument parsing
             shift
