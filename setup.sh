@@ -46,14 +46,14 @@ while (( "$#" )); do
 done
 
 function main {
-    sh install-software.sh --profile $PROFILE
+    bash install-software.sh --profile $PROFILE
 
-    sh create-ssh.sh
+    bash create-ssh.sh
 
     ## get rh46 dotfiles (private repo) if you're me
     if [ $email_hash == "8b0a81b8ee543657730b67074c08a332" ]; then
         git clone https://github.com/rh46/dotfiles.git $HOME/rh46/dotfiles
-        sh $HOME/rh46/dotfiles/setup.sh
+        bash $HOME/rh46/dotfiles/setup.sh
     fi
 
 
