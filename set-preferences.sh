@@ -22,14 +22,17 @@ else
 fi
 
 
-##### dock and spaces
+##### dock, spaces, and touchbar
 defaults write com.apple.dashboard mcx-disabled -boolean YES    # disable dashboard
 defaults delete com.apple.dock && killall Dock    # reset defaults
 defaults write com.apple.dock autohide -bool true   # enable autohide
 defaults write com.apple.dock dashboard-in-overlay -bool true   # don't show dashboard as space
 defaults write com.apple.dock mru-spaces -bool false    # do not automatically rearrange spaces on recent use
+defaults write com.apple.dock show-recents -bool false # disable show recent applications in dock 
 bash arrange-dock.sh    # call script to arrange dock items
 killall Dock    # restart dock
+defaults write ~/Library/Preferences/com.apple.controlstrip MiniCustomized '(com.apple.system.do-not-disturb, com.apple.system.volume, com.apple.system.mute, com.apple.system.mission-control)' # configure touchbar mini options
+killall ControlStrip # restart touchbar
 
 
 ##### firewall
