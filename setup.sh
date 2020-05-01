@@ -49,12 +49,13 @@ done
 function main {
     if [[ $SOFTWARE ]]; then
         bash install-software.sh --profile $PROFILE
-        bash create-ssh.sh
     fi
 
     if [[ $PREF ]]; then
         bash set-preferences.sh
     fi
+
+    bash create-ssh.sh
 
     ## get rh46 dotfiles (private repo) if you're me
     if [[ $email_hash == "8b0a81b8ee543657730b67074c08a332" ]]; then
@@ -62,13 +63,11 @@ function main {
         bash $HOME/rh46/dotfiles/setup.sh
     fi
 
-
     # install custom OMZ plugins and themes
     git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
     git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
     git clone https://github.com/denysdovhan/spaceship-prompt.git "$ZSH_CUSTOM/themes/spaceship-prompt"
-
 
     # install powerlines font. required for spaceship the zsh theme
     git clone https://github.com/powerline/fonts.git --depth=1
