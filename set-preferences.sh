@@ -131,13 +131,15 @@ defaults write com.apple.menuextra.clock DateFormat -string "EEE MMM d  h:mm a" 
 defaults write com.apple.menuextra.battery ShowPercent -bool true   # show battery percentage
 defaults write com.apple.airplay showInMenuBarIfPresent -bool true      # show airplay options when available
 defaults write com.apple.systemuiserver menuExtras -array \
-        "/System/Library/CoreServices/Menu Extras/TimeMachine.menu" \
-        "/System/Library/CoreServices/Menu Extras/AirPort.menu" \
-        "/System/Library/CoreServices/Menu Extras/Battery.menu" \
-        "/System/Library/CoreServices/Menu Extras/Clock.menu" \
-        "/System/Library/CoreServices/Menu Extras/Bluetooth.menu" \
         "/System/Library/CoreServices/Menu Extras/User.menu" \
-        "/System/Library/CoreServices/Menu Extras/Displays.menu"
+        "/System/Library/CoreServices/Menu Extras/Clock.menu" \
+        "/System/Library/CoreServices/Menu Extras/Battery.menu" \
+        "/System/Library/CoreServices/Menu Extras/AirPort.menu" \
+        "/System/Library/CoreServices/Menu Extras/Bluetooth.menu" \
+        "/System/Library/CoreServices/Menu Extras/Volume.menu" \
+        "/System/Library/CoreServices/Menu Extras/VPN.menu" \
+        "/System/Library/CoreServices/Menu Extras/Displays.menu" \
+        "/System/Library/CoreServices/Menu Extras/TimeMachine.menu" 
 
 
 ##### safari. copy pasta from https://github.com/mathiasbynens/dotfiles/blob/master/.macos
