@@ -33,6 +33,22 @@ bash arrange-dock.sh    # call script to arrange dock items
 killall Dock    # restart dock
 defaults write ~/Library/Preferences/com.apple.controlstrip MiniCustomized '(com.apple.system.do-not-disturb, com.apple.system.volume, com.apple.system.mute, com.apple.system.mission-control)' # configure touchbar mini options
 killall ControlStrip # restart touchbar
+=======
+open -a "Google Chrome" --args --make-default-browser
+pkill -a -i "Google Chrome"
+
+# Disable the all too sensitive backswipe on trackpads in Chrome
+defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool false
+defaults write com.google.Chrome.canary AppleEnableSwipeNavigateWithScrolls -bool false
+
+
+##### dock and spaces
+defaults delete com.apple.dock && killall Dock    # reset defaults
+defaults write com.apple.dock autohide -bool false   # disable autohide
+defaults write com.apple.dock dashboard-in-overlay -bool true   # don't show dashboard as space
+defaults write com.apple.dashboard mcx-disabled -boolean YES    # disable dashboard
+defaults write com.apple.dock mru-spaces -bool false    # do not automatically rearrange spaces on recent use
+killall Dock    # restart dock
 
 
 ##### firewall
