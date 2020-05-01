@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+command=$(basename $0)
+
 PROFILE=''
 TEST=''
 
@@ -68,8 +70,6 @@ function main {
         
         echo "Updating homebrew..."
         brew upgrade && brew update
-        
-        echo "Updating homebrew..."
         brew doctor && brew missing
 
         echo "#[Done]!"
