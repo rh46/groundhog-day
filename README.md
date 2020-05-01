@@ -5,18 +5,18 @@ A script to prevent you from reliving the same macOS setup routine over and over
 No additional software or configuration needed. Just run the commands below with root permissions.
 ```sh
 $ curl -L "https://github.com/rh46/groundhog-day/tarball/master" | tar -xz --strip-components=1
-$ sudo sh setup.sh
+$ sudo bash setup.sh --install-software home --set-preferences
 ```
 
 ### Usage
 ```
-New macOS environment setup script" 
-Usage: setup.sh [-c] [-e <email>] [-p {work|home}]
+New macOS environment setup script 
+Usage: setup.sh [--profile {work|home}] [--set-prefs]
 
 Options:
-  -h, --help  Show this help message and exit.
-  -c, --config-prefs     Set system preferences.
-  -p, --profile {work|home}  Installation additional software defined in profiles folder.
+  --help  Show this help message and exit.
+  --install-software {work|home}   Installation additional software for a given profile.
+  --set-preferences Set system preferences.
 ```
 
 ### Caution
@@ -29,5 +29,5 @@ This script is intended for my personal use so be careful about using it without
 - [x] Set perferences
 - [x] Separate softeware, dotfiles, perferences
 - [x] macOS Catalina and zsh
-- [ ] Python environment setup
+- [x] Python environment setup
 - [ ] Security hardening functionality

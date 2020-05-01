@@ -5,7 +5,7 @@ computername=$(scutil --get ComputerName)
 user=${USER}
 
 ## create SSH key and configure auth
-ssh-keygen -t rsa -b 4096 -C "${USER} on ${computername}"
+ssh-keygen -t rsa -b 4096 -C "${user} on ${computername}"
 eval "$(ssh-agent -s)"  # start ssh agent
 touch ~/.ssh/config # create ssh config file
 cat <<EOT >> $HOME/.ssh/config

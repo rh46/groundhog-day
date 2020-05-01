@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+command=$(basename $0)
+
 ##### get sudo status
 if [[ "$EUID" = 0 ]]; then
         SUDOER=true
@@ -9,6 +11,29 @@ fi
 
 
 ##### launch chrome and make it the default broswer
+if open -Ra "Google Chrome" ; then
+        open -a "Google Chrome" --args --make-default-browser
+        pkill -a -i "Google Chrome"
+        # Disable too sensitive backswipe on trackpads in Chrome
+        defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool false
+        defaults write com.google.Chrome.canary AppleEnableSwipeNavigateWithScrolls -bool false
+else
+        echo "ERROR: Google Chrome not installed, skipping setup..."
+fi
+
+
+##### dock, spaces, and touchbar
+defaults write com.apple.dashboard mcx-disabled -boolean YES    # disable dashboard
+defaults delete com.apple.dock && killall Dock    # reset defaults
+defaults write com.apple.dock autohide -bool true   # enable autohide
+defaults write com.apple.dock dashboard-in-overlay -bool true   # don't show dashboard as space
+defaults write com.apple.dock mru-spaces -bool false    # do not automatically rearrange spaces on recent use
+defaults write com.apple.dock show-recents -bool false # disable show recent applications in dock 
+bash arrange-dock.sh    # call script to arrange dock items
+killall Dock    # restart dock
+defaults write ~/Library/Preferences/com.apple.controlstrip MiniCustomized '(com.apple.system.do-not-disturb, com.apple.system.volume, com.apple.system.mute, com.apple.system.mission-control)' # configure touchbar mini options
+killall ControlStrip # restart touchbar
+=======
 open -a "Google Chrome" --args --make-default-browser
 pkill -a -i "Google Chrome"
 
@@ -35,6 +60,7 @@ if [[ $SUDOER ]]; then
         sudo pkill -HUP socketfilterfw  # apply changes
 fi
 
+
 ##### security & privacy
 defaults write com.apple.screensaver askForPassword -int 1  # ask for password on screensaver
 defaults write com.apple.screensaver askForPasswordDelay -int 0 # no delay on password for screensaver
@@ -43,6 +69,10 @@ if [[ $SUDOER ]]; then
         sudo spctl --master-enable  # enable gatekeeper
         sudo defaults write /Library/Preferences/com.apple.loginwindow GuestEnabled -bool false # disable guest account
 fi
+
+
+##### dns
+networksetup -setdnsservers 1.1.1.1 9.9.9.9
 
 
 ##### auto updates
@@ -117,16 +147,35 @@ defaults write com.apple.menuextra.clock DateFormat -string "EEE MMM d  h:mm a" 
 defaults write com.apple.menuextra.battery ShowPercent -bool true   # show battery percentage
 defaults write com.apple.airplay showInMenuBarIfPresent -bool true      # show airplay options when available
 defaults write com.apple.systemuiserver menuExtras -array \
-        "/System/Library/CoreServices/Menu Extras/TimeMachine.menu" \
-        "/System/Library/CoreServices/Menu Extras/AirPort.menu" \
-        "/System/Library/CoreServices/Menu Extras/Battery.menu" \
-        "/System/Library/CoreServices/Menu Extras/Clock.menu" \
-        "/System/Library/CoreServices/Menu Extras/Bluetooth.menu" \
         "/System/Library/CoreServices/Menu Extras/User.menu" \
-        "/System/Library/CoreServices/Menu Extras/Displays.menu"
+        "/System/Library/CoreServices/Menu Extras/Clock.menu" \
+        "/System/Library/CoreServices/Menu Extras/Battery.menu" \
+        "/System/Library/CoreServices/Menu Extras/AirPort.menu" \
+        "/System/Library/CoreServices/Menu Extras/Bluetooth.menu" \
+        "/System/Library/CoreServices/Menu Extras/Volume.menu" \
+        "/System/Library/CoreServices/Menu Extras/VPN.menu" \
+        "/System/Library/CoreServices/Menu Extras/Displays.menu" \
+        "/System/Library/CoreServices/Menu Extras/TimeMachine.menu" 
 
 
-##### safari from https://github.com/mathiasbynens/dotfiles/blob/master/.macos
+##### safari. copy pasta from https://github.com/mathiasbynens/dotfiles/blob/master/.macos
+
+defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool true        # show the full URL in the address bar (note: this still hides the scheme)
+defaults write com.apple.Safari HomePage -string "about:blank"  # set Safari’s home page to `about:blank` for faster loading
+defaults write com.apple.Safari AutoOpenSafeDownloads -bool false       # prevent Safari from opening ‘safe’ files automatically after downloading
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2BackspaceKeyNavigationEnabled -bool true     # allow hitting the Backspace key to go to the previous page in history
+defaults write com.apple.Safari ShowFavoritesBar -bool false    # hide Safari’s bookmarks bar by default
+defaults write com.apple.Safari ShowSidebarInTopSites -bool false       # hide Safari’s sidebar in Top Sites
+defaults write com.apple.Safari DebugSnapshotsUpdatePolicy -int 2       # disable Safari’s thumbnail cache for History and Top Sites
+defaults write com.apple.Safari IncludeInternalDebugMenu -bool true     # enable Safari’s debug menu
+defaults write com.apple.Safari FindOnPageMatchesWordStartsOnly -bool false     # make Safari’s search banners default to Contains instead of Starts With
+defaults write com.apple.Safari ProxiesInBookmarksBar "()"      # eemove useless icons from Safari’s bookmarks bar
+defaults write com.apple.Safari SendDoNotTrackHTTPHeader -bool true     # enable “Do Not Track”
+defaults write com.apple.Safari InstallExtensionUpdatesAutomatically -bool true # update extensions automatically
+defaults write com.apple.Safari WarnAboutFraudulentWebsites -bool true # warn about fraudulent websites
+defaults write com.apple.Safari WebContinuousSpellCheckingEnabled -bool true    # enable continuous spellchecking
+defaults write com.apple.Safari WebAutomaticSpellingCorrectionEnabled -bool false       # disable auto-correct
+defaults write NSGlobalDomain WebKitDeveloperExtras -bool true  # add a context menu item for showing the Web Inspector in web views
 
 # Privacy: don’t send search queries to Apple
 defaults write com.apple.Safari UniversalSearchEnabled -bool false
@@ -136,57 +185,16 @@ defaults write com.apple.Safari SuppressSearchSuggestions -bool true
 defaults write com.apple.Safari WebKitTabToLinksPreferenceKey -bool true
 defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2TabsToLinks -bool true
 
-# Show the full URL in the address bar (note: this still hides the scheme)
-defaults write com.apple.Safari ShowFullURLInSmartSearchField -bool true
-
-# Set Safari’s home page to `about:blank` for faster loading
-defaults write com.apple.Safari HomePage -string "about:blank"
-
-# Prevent Safari from opening ‘safe’ files automatically after downloading
-defaults write com.apple.Safari AutoOpenSafeDownloads -bool false
-
-# Allow hitting the Backspace key to go to the previous page in history
-defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2BackspaceKeyNavigationEnabled -bool true
-
-# Hide Safari’s bookmarks bar by default
-defaults write com.apple.Safari ShowFavoritesBar -bool false
-
-# Hide Safari’s sidebar in Top Sites
-defaults write com.apple.Safari ShowSidebarInTopSites -bool false
-
-# Disable Safari’s thumbnail cache for History and Top Sites
-defaults write com.apple.Safari DebugSnapshotsUpdatePolicy -int 2
-
-# Enable Safari’s debug menu
-defaults write com.apple.Safari IncludeInternalDebugMenu -bool true
-
-# Make Safari’s search banners default to Contains instead of Starts With
-defaults write com.apple.Safari FindOnPageMatchesWordStartsOnly -bool false
-
-# Remove useless icons from Safari’s bookmarks bar
-defaults write com.apple.Safari ProxiesInBookmarksBar "()"
-
 # Enable the Develop menu and the Web Inspector in Safari
 defaults write com.apple.Safari IncludeDevelopMenu -bool true
 defaults write com.apple.Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
 defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
 
-# Add a context menu item for showing the Web Inspector in web views
-defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
-
-# Enable continuous spellchecking
-defaults write com.apple.Safari WebContinuousSpellCheckingEnabled -bool true
-# Disable auto-correct
-defaults write com.apple.Safari WebAutomaticSpellingCorrectionEnabled -bool false
-
 # Disable AutoFill
 #defaults write com.apple.Safari AutoFillFromAddressBook -bool false
-#defaults write com.apple.Safari AutoFillPasswords -bool false
-#defaults write com.apple.Safari AutoFillCreditCardData -bool false
-#defaults write com.apple.Safari AutoFillMiscellaneousForms -bool false
-
-# Warn about fraudulent websites
-defaults write com.apple.Safari WarnAboutFraudulentWebsites -bool true
+defaults write com.apple.Safari AutoFillPasswords -bool false
+defaults write com.apple.Safari AutoFillCreditCardData -bool false
+defaults write com.apple.Safari AutoFillMiscellaneousForms -bool false
 
 # Disable plug-ins
 defaults write com.apple.Safari WebKitPluginsEnabled -bool false
@@ -202,16 +210,10 @@ defaults write com.apple.Safari WebKitJavaScriptCanOpenWindowsAutomatically -boo
 defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaScriptCanOpenWindowsAutomatically -bool false
 
 # Disable auto-playing video
-#defaults write com.apple.Safari WebKitMediaPlaybackAllowsInline -bool false
-#defaults write com.apple.SafariTechnologyPreview WebKitMediaPlaybackAllowsInline -bool false
-#defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2AllowsInlineMediaPlayback -bool false
-#defaults write com.apple.SafariTechnologyPreview com.apple.Safari.ContentPageGroupIdentifier.WebKit2AllowsInlineMediaPlayback -bool false
-
-# Enable “Do Not Track”
-defaults write com.apple.Safari SendDoNotTrackHTTPHeader -bool true
-
-# Update extensions automatically
-defaults write com.apple.Safari InstallExtensionUpdatesAutomatically -bool true
+defaults write com.apple.Safari WebKitMediaPlaybackAllowsInline -bool false
+defaults write com.apple.SafariTechnologyPreview WebKitMediaPlaybackAllowsInline -bool false
+defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2AllowsInlineMediaPlayback -bool false
+defaults write com.apple.SafariTechnologyPreview com.apple.Safari.ContentPageGroupIdentifier.WebKit2AllowsInlineMediaPlayback -bool false
 
 
 ##### NSGlobalDomain settings from https://github.com/mathiasbynens/dotfiles/blob/master/.macos
@@ -234,29 +236,14 @@ defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
 
 ##### other
 
-# Use plain text mode for new TextEdit documents
-defaults write com.apple.TextEdit RichText -int 0
-
-# Enable Secure Keyboard Entry in Terminal.app
-defaults write com.apple.terminal SecureKeyboardEntry -bool true
-
-# Save to disk (not to iCloud) by default
-defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
-
-# Save screenshots in PNG format
-defaults write com.apple.screencapture type -string "png"
-
-# Disable shadow in screenshots
-defaults write com.apple.screencapture disable-shadow -bool true
-
-# Disable automatic emoji substitution (i.e. use plain text smileys)
-defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticEmojiSubstitutionEnablediMessage" -bool false
-
-# Disable smart quotes as it’s annoying for messages that contain code
-defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticQuoteSubstitutionEnabled" -bool false
-
-# Disable continuous spell checking
-defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "continuousSpellCheckingEnabled" -bool false
+defaults write com.apple.TextEdit RichText -int 0       # use plain text mode for new TextEdit documents
+defaults write com.apple.terminal SecureKeyboardEntry -bool true        # enable Secure Keyboard Entry in Terminal.app
+#defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false    # save to disk (not to iCloud) by default
+defaults write com.apple.screencapture type -string "png"       # save screenshots in PNG format
+defaults write com.apple.screencapture disable-shadow -bool true        # disable shadow in screenshots
+defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticEmojiSubstitutionEnablediMessage" -bool false # disable automatic emoji substitution (i.e. use plain text smileys)
+defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticQuoteSubstitutionEnabled" -bool false # disable smart quotes as it’s annoying for messages that contain code
+#defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "continuousSpellCheckingEnabled" -bool false   # disable continuous spell checking
 
 if [[ $SUDOER ]]; then
         # disable captive portal
